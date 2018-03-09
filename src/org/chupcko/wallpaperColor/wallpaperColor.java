@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import java.io.IOException;
-import java.lang.NumberFormatException;
 
 /* import android.util.Log; */
 
@@ -254,7 +253,7 @@ public class wallpaperColor extends Activity implements
   private void updateRed()
   {
     editTextRed.setText(Integer.toString(colorRed));
-    editTextRedHex.setText(Integer.toHexString(colorRed));
+    editTextRedHex.setText(String.format("%02x", colorRed));
     seekRed.setProgress(colorRed);
     updateSample();
   }
@@ -274,7 +273,7 @@ public class wallpaperColor extends Activity implements
   private void updateGreen()
   {
     editTextGreen.setText(Integer.toString(colorGreen));
-    editTextGreenHex.setText(Integer.toHexString(colorGreen));
+    editTextGreenHex.setText(String.format("%02x", colorGreen));
     seekGreen.setProgress(colorGreen);
     updateSample();
   }
@@ -294,7 +293,7 @@ public class wallpaperColor extends Activity implements
   private void updateBlue()
   {
     editTextBlue.setText(Integer.toString(colorBlue));
-    editTextBlueHex.setText(Integer.toHexString(colorBlue));
+    editTextBlueHex.setText(String.format("%02x", colorBlue));
     seekBlue.setProgress(colorBlue);
     updateSample();
   }
@@ -330,7 +329,7 @@ public class wallpaperColor extends Activity implements
     builder.setTitle(R.string.app_name);
     builder.setMessage
     (
-      "Version: 1.01\n"+
+      "Version: 1.02\n"+
       "\n"+
       "Code:\n"+
       "Goran \"CHUPCKO\" Lazic\n"+
