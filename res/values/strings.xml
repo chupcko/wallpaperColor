@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Wallpaper Color</string>
+  <string name="button_set">Set</string>
+  <string name="menu_about">About</string>
+</resources>
