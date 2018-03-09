@@ -2,5 +2,6 @@
 <resources>
   <string name="app_name">Wallpaper Color</string>
   <string name="button_set">Set</string>
+  <string name="menu_previously_set">Previously Set</string>
   <string name="menu_about">About</string>
 </resources>

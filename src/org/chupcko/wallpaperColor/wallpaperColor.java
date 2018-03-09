@@ -3,6 +3,8 @@ package org.chupcko.wallpaperColor;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.WallpaperManager;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -18,6 +20,8 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.lang.NumberFormatException;
 
+/* import android.util.Log; */
+
 public class wallpaperColor extends Activity implements
   SeekBar.OnSeekBarChangeListener,
   View.OnClickListener,
@@ -26,9 +30,20 @@ public class wallpaperColor extends Activity implements
   private final int minColorComponentValue = 0x00;
   private final int maxColorComponentValue = 0xff;
 
+  private final String name = "wallpaperColor";
+  private final String colorRedName = "colorRed";
+  private final String colorGreenName = "colorGreen";
+  private final String colorBlueName = "colorBlue";
+  private final String lastColorRedName = "lastColorRed";
+  private final String lastColorGreenName = "lastColorGreen";
+  private final String lastColorBlueName = "lastColorBlue";
+
   private int colorRed;
   private int colorGreen;
   private int colorBlue;
+  private int lastColorRed;
+  private int lastColorGreen;
+  private int lastColorBlue;
 
   private EditText editTextRed;
   private EditText editTextRedHex;
@@ -76,9 +91,27 @@ public class wallpaperColor extends Activity implements
     ((Button)findViewById(R.id.button_set)).setOnClickListener(this);
     colorSample = (colorSampleBox)findViewById(R.id.color_sample);
 
-    setRed(0);
-    setGreen(0);
-    setBlue(0);
+    SharedPreferences settings = getSharedPreferences(name, Context.MODE_PRIVATE);
+    setRed(settings.getInt(colorRedName, 0));
+    setGreen(settings.getInt(colorGreenName, 0));
+    setBlue(settings.getInt(colorBlueName, 0));
+    lastColorRed = settings.getInt(lastColorRedName, 0);
+    lastColorGreen = settings.getInt(lastColorGreenName, 0);
+    lastColorBlue = settings.getInt(lastColorBlueName, 0);
+  }
+
+  @Override public void onStop()
+  {
+    super.onStop();
+    SharedPreferences settings = getSharedPreferences(name, Context.MODE_PRIVATE);
+    SharedPreferences.Editor editor = settings.edit();
+    editor.putInt(colorRedName, colorRed);
+    editor.putInt(colorGreenName, colorGreen);
+    editor.putInt(colorBlueName, colorBlue);
+    editor.putInt(lastColorRedName, lastColorRed);
+    editor.putInt(lastColorGreenName, lastColorGreen);
+    editor.putInt(lastColorBlueName, lastColorBlue);
+    editor.commit();
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu)
@@ -89,10 +122,14 @@ public class wallpaperColor extends Activity implements
 
   @Override public boolean onOptionsItemSelected(MenuItem item)
   {
-    if(item.getItemId() == R.id.menu_about)
+    switch(item.getItemId())
     {
-      showAbout();
-      return true;
+      case R.id.menu_previously_set:
+        setPreviously();
+        return true;
+      case R.id.menu_about:
+        showAbout();
+        return true;
     }
     return super.onOptionsItemSelected(item);
   }
@@ -172,6 +209,13 @@ public class wallpaperColor extends Activity implements
         setBlue(((TextView)view).getText().toString(), 16);
         break;
     }
+  }
+
+  private void setPreviously()
+  {
+    setRed(lastColorRed);
+    setGreen(lastColorGreen);
+    setBlue(lastColorBlue);
   }
 
   private int getColorComponent(int colorComponent)
@@ -264,7 +308,6 @@ public class wallpaperColor extends Activity implements
   {
     final WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
     final Bitmap bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-
     new Canvas(bitmap).drawColor(Color.rgb(colorRed, colorGreen, colorBlue));
     try
     {
@@ -274,7 +317,11 @@ public class wallpaperColor extends Activity implements
     }
     catch(IOException exception)
     {
+      return;/*# error */
     }
+    lastColorRed = colorRed;
+    lastColorGreen = colorGreen;
+    lastColorBlue = colorBlue;
   }
 
   private void showAbout()
@@ -283,9 +330,14 @@ public class wallpaperColor extends Activity implements
     builder.setTitle(R.string.app_name);
     builder.setMessage
     (
-      "Version: 1.0\n"+
+      "Version: 1.01\n"+
       "\n"+
-      "Goran \"CHUPCKO\" Lazic"
+      "Code:\n"+
+      "Goran \"CHUPCKO\" Lazic\n"+
+      "\n"+
+      "Thanks:\n"+
+      "Aleksandra \"Alexis\" Jovanic\n"+
+      "Slavica Marinkovic"
     );
     builder.create();
     builder.show();
