@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import java.io.IOException;
@@ -26,16 +27,18 @@ public class wallpaperColor extends Activity implements
   View.OnClickListener,
   View.OnFocusChangeListener
 {
-  private final int minColorComponentValue = 0x00;
-  private final int maxColorComponentValue = 0xff;
+  private static final int minColorComponentValue = 0x00;
+  private static final int maxColorComponentValue = 0xff;
 
-  private final String name = "wallpaperColor";
-  private final String colorRedName = "colorRed";
-  private final String colorGreenName = "colorGreen";
-  private final String colorBlueName = "colorBlue";
-  private final String lastColorRedName = "lastColorRed";
-  private final String lastColorGreenName = "lastColorGreen";
-  private final String lastColorBlueName = "lastColorBlue";
+  private static final String name = "wallpaperColor";
+  private static final String colorRedName = "colorRed";
+  private static final String colorGreenName = "colorGreen";
+  private static final String colorBlueName = "colorBlue";
+  private static final String lastColorRedName = "lastColorRed";
+  private static final String lastColorGreenName = "lastColorGreen";
+  private static final String lastColorBlueName = "lastColorBlue";
+
+  private SharedPreferences settings;
 
   private int colorRed;
   private int colorGreen;
@@ -44,6 +47,7 @@ public class wallpaperColor extends Activity implements
   private int lastColorGreen;
   private int lastColorBlue;
 
+  private LinearLayout layout;
   private EditText editTextRed;
   private EditText editTextRedHex;
   private SeekBar seekRed;
@@ -53,12 +57,13 @@ public class wallpaperColor extends Activity implements
   private EditText editTextBlue;
   private EditText editTextBlueHex;
   private SeekBar seekBlue;
-  private colorSampleBox colorSample;
 
   @Override public void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
+
+    layout = (LinearLayout)findViewById(R.id.layout);
 
     editTextRed = (EditText)findViewById(R.id.edit_red);
     editTextRed.setOnFocusChangeListener(this);
@@ -88,9 +93,8 @@ public class wallpaperColor extends Activity implements
     ((Button)findViewById(R.id.button_plus_blue)).setOnClickListener(this);
 
     ((Button)findViewById(R.id.button_set)).setOnClickListener(this);
-    colorSample = (colorSampleBox)findViewById(R.id.color_sample);
 
-    SharedPreferences settings = getSharedPreferences(name, Context.MODE_PRIVATE);
+    settings = getSharedPreferences(name, Context.MODE_PRIVATE);
     setRed(settings.getInt(colorRedName, 0));
     setGreen(settings.getInt(colorGreenName, 0));
     setBlue(settings.getInt(colorBlueName, 0));
@@ -102,7 +106,6 @@ public class wallpaperColor extends Activity implements
   @Override public void onStop()
   {
     super.onStop();
-    SharedPreferences settings = getSharedPreferences(name, Context.MODE_PRIVATE);
     SharedPreferences.Editor editor = settings.edit();
     editor.putInt(colorRedName, colorRed);
     editor.putInt(colorGreenName, colorGreen);
@@ -228,9 +231,14 @@ public class wallpaperColor extends Activity implements
 
   private int getColorComponent(String string, int radix)
   {
+    String value;
+    if(radix == 16 && string.startsWith("0x"))
+      value = string.substring(2);
+    else
+      value = new String(string);
     try
     {
-      return getColorComponent(Integer.parseInt(string, radix));
+      return getColorComponent(Integer.parseInt(value, radix));
     }
     catch(NumberFormatException exception)
     {
@@ -253,7 +261,7 @@ public class wallpaperColor extends Activity implements
   private void updateRed()
   {
     editTextRed.setText(Integer.toString(colorRed));
-    editTextRedHex.setText(String.format("%02x", colorRed));
+    editTextRedHex.setText(String.format("0x%02x", colorRed));
     seekRed.setProgress(colorRed);
     updateSample();
   }
@@ -273,7 +281,7 @@ public class wallpaperColor extends Activity implements
   private void updateGreen()
   {
     editTextGreen.setText(Integer.toString(colorGreen));
-    editTextGreenHex.setText(String.format("%02x", colorGreen));
+    editTextGreenHex.setText(String.format("0x%02x", colorGreen));
     seekGreen.setProgress(colorGreen);
     updateSample();
   }
@@ -293,14 +301,14 @@ public class wallpaperColor extends Activity implements
   private void updateBlue()
   {
     editTextBlue.setText(Integer.toString(colorBlue));
-    editTextBlueHex.setText(String.format("%02x", colorBlue));
+    editTextBlueHex.setText(String.format("0x%02x", colorBlue));
     seekBlue.setProgress(colorBlue);
     updateSample();
   }
 
   private void updateSample()
   {
-    colorSample.setColor(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress());
+    layout.setBackgroundColor(Color.rgb(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()));
   }
 
   private void setWallpaper()
@@ -329,14 +337,14 @@ public class wallpaperColor extends Activity implements
     builder.setTitle(R.string.app_name);
     builder.setMessage
     (
-      "Version: 1.02\n"+
+      "Version: 1.03\n"+
       "\n"+
       "Code:\n"+
       "Goran \"CHUPCKO\" Lazic\n"+
       "\n"+
       "Thanks:\n"+
       "Aleksandra \"Alexis\" Jovanic\n"+
-      "Slavica Marinkovic"
+      "Slavica \"Caca\" Marinkovic"
     );
     builder.create();
     builder.show();
