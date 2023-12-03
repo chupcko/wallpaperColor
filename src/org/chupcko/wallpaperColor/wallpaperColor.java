@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -313,12 +314,15 @@ public class wallpaperColor extends Activity implements
 
   private void setWallpaper()
   {
+    final DisplayMetrics displayMetrics = new DisplayMetrics();
+    getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
     final WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
     final Bitmap bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
     new Canvas(bitmap).drawColor(Color.rgb(colorRed, colorGreen, colorBlue));
+    final Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, displayMetrics.widthPixels, displayMetrics.heightPixels, true);
     try
     {
-      wallpaperManager.setBitmap(bitmap);
+      wallpaperManager.setBitmap(scaledBitmap);
       setResult(RESULT_OK);
       finish();
     }
@@ -337,7 +341,7 @@ public class wallpaperColor extends Activity implements
     builder.setTitle(R.string.app_name);
     builder.setMessage
     (
-      "Version: 1.03\n"+
+      "Version: 1.04\n"+
       "\n"+
       "Code:\n"+
       "Goran \"CHUPCKO\" Lazic\n"+
