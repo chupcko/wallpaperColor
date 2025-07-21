@@ -6,7 +6,11 @@
   <string name="main_blue">Blue:</string>
   <string name="main_minus">-</string>
   <string name="main_plus">+</string>
-  <string name="main_set">Set</string>
-  <string name="menu_previously_set">Previously Set</string>
+  <string name="main_set">Set on system and lock screen</string>
+  <string name="main_set_system">Set on system only</string>
+  <string name="main_set_lock">Set on lock screen only</string>
+  <string name="menu_previously_set">Previously set</string>
+  <string name="menu_previously_set_system">Previously set on system</string>
+  <string name="menu_previously_set_lock">Previously set on lock screen</string>
   <string name="menu_about">About</string>
 </resources>

@@ -179,4 +179,16 @@
     android:layout_height="wrap_content"
     android:text="@string/main_set"
   />
+  <Button
+    android:id="@+id/button_set_system"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/main_set_system"
+  />
+  <Button
+    android:id="@+id/button_set_lock"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/main_set_lock"
+  />
 </LinearLayout>

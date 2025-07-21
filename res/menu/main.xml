@@ -5,6 +5,14 @@
     android:title="@string/menu_previously_set"
   />
   <item
+    android:id="@+id/menu_previously_set_system"
+    android:title="@string/menu_previously_set_system"
+  />
+  <item
+    android:id="@+id/menu_previously_set_lock"
+    android:title="@string/menu_previously_set_lock"
+  />
+  <item
     android:id="@+id/menu_about"
     android:title="@string/menu_about"
   />

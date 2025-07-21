@@ -23,7 +23,7 @@ import java.io.IOException;
 
 /* import android.util.Log; */
 
-public class wallpaperColor extends Activity implements
+public class WallpaperColor extends Activity implements
   SeekBar.OnSeekBarChangeListener,
   View.OnClickListener,
   View.OnFocusChangeListener
@@ -31,13 +31,19 @@ public class wallpaperColor extends Activity implements
   private static final int minColorComponentValue = 0x00;
   private static final int maxColorComponentValue = 0xff;
 
-  private static final String name = "wallpaperColor";
+  private static final String name = "WallpaperColor";
   private static final String colorRedName = "colorRed";
   private static final String colorGreenName = "colorGreen";
   private static final String colorBlueName = "colorBlue";
   private static final String lastColorRedName = "lastColorRed";
   private static final String lastColorGreenName = "lastColorGreen";
   private static final String lastColorBlueName = "lastColorBlue";
+  private static final String lastSystemColorRedName = "lastSystemColorRed";
+  private static final String lastSystemColorGreenName = "lastSystemColorGreen";
+  private static final String lastSystemColorBlueName = "lastSystemColorBlue";
+  private static final String lastLockColorRedName = "lastLockColorRed";
+  private static final String lastLockColorGreenName = "lastLockColorGreen";
+  private static final String lastLockColorBlueName = "lastLockColorBlue";
 
   private SharedPreferences settings;
 
@@ -47,6 +53,12 @@ public class wallpaperColor extends Activity implements
   private int lastColorRed;
   private int lastColorGreen;
   private int lastColorBlue;
+  private int lastSystemColorRed;
+  private int lastSystemColorGreen;
+  private int lastSystemColorBlue;
+  private int lastLockColorRed;
+  private int lastLockColorGreen;
+  private int lastLockColorBlue;
 
   private LinearLayout layout;
   private EditText editTextRed;
@@ -94,6 +106,8 @@ public class wallpaperColor extends Activity implements
     ((Button)findViewById(R.id.button_plus_blue)).setOnClickListener(this);
 
     ((Button)findViewById(R.id.button_set)).setOnClickListener(this);
+    ((Button)findViewById(R.id.button_set_system)).setOnClickListener(this);
+    ((Button)findViewById(R.id.button_set_lock)).setOnClickListener(this);
 
     settings = getSharedPreferences(name, Context.MODE_PRIVATE);
     setRed(settings.getInt(colorRedName, 0));
@@ -102,6 +116,12 @@ public class wallpaperColor extends Activity implements
     lastColorRed = settings.getInt(lastColorRedName, 0);
     lastColorGreen = settings.getInt(lastColorGreenName, 0);
     lastColorBlue = settings.getInt(lastColorBlueName, 0);
+    lastSystemColorRed = settings.getInt(lastSystemColorRedName, 0);
+    lastSystemColorGreen = settings.getInt(lastSystemColorGreenName, 0);
+    lastSystemColorBlue = settings.getInt(lastSystemColorBlueName, 0);
+    lastLockColorRed = settings.getInt(lastLockColorRedName, 0);
+    lastLockColorGreen = settings.getInt(lastLockColorGreenName, 0);
+    lastLockColorBlue = settings.getInt(lastLockColorBlueName, 0);
   }
 
   @Override public void onStop()
@@ -114,6 +134,12 @@ public class wallpaperColor extends Activity implements
     editor.putInt(lastColorRedName, lastColorRed);
     editor.putInt(lastColorGreenName, lastColorGreen);
     editor.putInt(lastColorBlueName, lastColorBlue);
+    editor.putInt(lastSystemColorRedName, lastSystemColorRed);
+    editor.putInt(lastSystemColorGreenName, lastSystemColorGreen);
+    editor.putInt(lastSystemColorBlueName, lastSystemColorBlue);
+    editor.putInt(lastLockColorRedName, lastLockColorRed);
+    editor.putInt(lastLockColorGreenName, lastLockColorGreen);
+    editor.putInt(lastLockColorBlueName, lastLockColorBlue);
     editor.commit();
   }
 
@@ -129,6 +155,12 @@ public class wallpaperColor extends Activity implements
     {
       case R.id.menu_previously_set:
         setPreviously();
+        return true;
+      case R.id.menu_previously_set_system:
+        setPreviouslySystem();
+        return true;
+      case R.id.menu_previously_set_lock:
+        setPreviouslyLock();
         return true;
       case R.id.menu_about:
         showAbout();
@@ -186,6 +218,12 @@ public class wallpaperColor extends Activity implements
       case R.id.button_set:
         setWallpaper();
         break;
+      case R.id.button_set_system:
+        setWallpaperSystem();
+        break;
+      case R.id.button_set_lock:
+        setWallpaperLock();
+        break;
     }
   }
 
@@ -219,6 +257,20 @@ public class wallpaperColor extends Activity implements
     setRed(lastColorRed);
     setGreen(lastColorGreen);
     setBlue(lastColorBlue);
+  }
+
+  private void setPreviouslySystem()
+  {
+    setRed(lastSystemColorRed);
+    setGreen(lastSystemColorGreen);
+    setBlue(lastSystemColorBlue);
+  }
+
+  private void setPreviouslyLock()
+  {
+    setRed(lastLockColorRed);
+    setGreen(lastLockColorGreen);
+    setBlue(lastLockColorBlue);
   }
 
   private int getColorComponent(int colorComponent)
@@ -312,7 +364,7 @@ public class wallpaperColor extends Activity implements
     layout.setBackgroundColor(Color.rgb(seekRed.getProgress(), seekGreen.getProgress(), seekBlue.getProgress()));
   }
 
-  private void setWallpaper()
+  private void setWallpaperDo(int where)
   {
     final DisplayMetrics displayMetrics = new DisplayMetrics();
     getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -322,7 +374,7 @@ public class wallpaperColor extends Activity implements
     final Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, displayMetrics.widthPixels, displayMetrics.heightPixels, true);
     try
     {
-      wallpaperManager.setBitmap(scaledBitmap);
+      wallpaperManager.setBitmap(scaledBitmap, null, true, where);
       setResult(RESULT_OK);
       finish();
     }
@@ -335,20 +387,46 @@ public class wallpaperColor extends Activity implements
     lastColorBlue = colorBlue;
   }
 
+  private void setWallpaper()
+  {
+    setWallpaperDo(WallpaperManager.FLAG_SYSTEM|WallpaperManager.FLAG_LOCK);
+    lastSystemColorRed = colorRed;
+    lastSystemColorGreen = colorGreen;
+    lastSystemColorBlue = colorBlue;
+    lastLockColorRed = colorRed;
+    lastLockColorGreen = colorGreen;
+    lastLockColorBlue = colorBlue;
+  }
+
+  private void setWallpaperSystem()
+  {
+    setWallpaperDo(WallpaperManager.FLAG_SYSTEM);
+    lastSystemColorRed = colorRed;
+    lastSystemColorGreen = colorGreen;
+    lastSystemColorBlue = colorBlue;
+  }
+
+  private void setWallpaperLock()
+  {
+    setWallpaperDo(WallpaperManager.FLAG_LOCK);
+    lastLockColorRed = colorRed;
+    lastLockColorGreen = colorGreen;
+    lastLockColorBlue = colorBlue;
+  }
+
   private void showAbout()
   {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setTitle(R.string.app_name);
     builder.setMessage
     (
-      "Version: 1.04\n"+
+      "Version: 1.07\n"+
       "\n"+
       "Code:\n"+
       "Goran \"CHUPCKO\" Lazic\n"+
       "\n"+
       "Thanks:\n"+
-      "Aleksandra \"Alexis\" Jovanic\n"+
-      "Slavica \"Caca\" Marinkovic"
+      "Aleksandra \"Alexis\" Jovanic"
     );
     builder.create();
     builder.show();

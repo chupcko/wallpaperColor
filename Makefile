@@ -8,7 +8,7 @@ ifeq ($(LIBS), )
 else
   LIBS_CLASSPATH = -classpath $(LIBS)
 endif
-PATH += :$(ANDROID_PATH)/tools:$(ANDROID_PATH)/platform-tools:$(ANDROID_PATH)/build-tools/34.0.0
+PATH += :$(ANDROID_PATH)/platform-tools:$(ANDROID_PATH)/build-tools/$(BUILD_VERSION)
 
 .PHONY: all
 all: bin/$(NAME)-$(VERSION).apk
@@ -22,7 +22,7 @@ gen/$(PACKAGE_PATH)/R.java: AndroidManifest.xml res/*/*
 
 bin/classes: gen/$(PACKAGE_PATH)/R.java src/$(PACKAGE_PATH)/*
 	mkdir -p bin/classes
-	javac -encoding ascii -source 1.8 -target 1.8 -d bin/classes -bootclasspath $(ANDROID_PLATFORM_PATH)/android.jar $(LIBS_CLASEPATH) gen/$(PACKAGE_PATH)/R.java src/$(PACKAGE_PATH)/*
+	javac -encoding ascii -source 8 -target 8 -d bin/classes -bootclasspath $(ANDROID_PLATFORM_PATH)/android.jar $(LIBS_CLASEPATH) gen/$(PACKAGE_PATH)/R.java src/$(PACKAGE_PATH)/*
 	touch bin/classes
 
 bin/classes.dex: bin/classes
@@ -84,7 +84,7 @@ run: reinstall start
 
 .PHONY: stop
 stop:
-	adb shell kill -9 `adb shell ps | grep $(PACKAGE) | tr -s ' ' | cut -d ' ' -f 2`
+	adb shell am force-stop $(PACKAGE)
 
 .PHONY: uninstall
 uninstall:
