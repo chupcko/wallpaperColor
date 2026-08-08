@@ -1,8 +1,8 @@
-VERSION            = 1.07
+VERSION            = 1.08
 
 ANDROID_PATH       = /home/chupcko/Android
-PLATFORM           = android-35
-BUILD_VERSION      = 35.0.0
+PLATFORM           = android-36
+BUILD_VERSION      = 36.0.0
 NAME               = wallpaperColor
 PACKAGE            = org.chupcko.wallpaperColor
 ACTIVITY           = WallpaperColor
