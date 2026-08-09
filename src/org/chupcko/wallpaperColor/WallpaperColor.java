@@ -422,8 +422,7 @@ public class WallpaperColor extends Activity implements
     (
       "Version: 1.10\n"+
       "\n"+
-      "Code:\n"+
-      "Goran \"CHUPCKO\" Lazic\n"
+      "Code: Goran \"CHUPCKO\" Lazic"
     );
     builder.create();
     builder.show();
