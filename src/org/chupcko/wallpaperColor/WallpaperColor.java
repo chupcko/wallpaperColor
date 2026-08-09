@@ -420,13 +420,10 @@ public class WallpaperColor extends Activity implements
     builder.setTitle(R.string.app_name);
     builder.setMessage
     (
-      "Version: 1.07\n"+
+      "Version: 1.10\n"+
       "\n"+
       "Code:\n"+
-      "Goran \"CHUPCKO\" Lazic\n"+
-      "\n"+
-      "Thanks:\n"+
-      "Aleksandra \"Alexis\" Jovanic"
+      "Goran \"CHUPCKO\" Lazic\n"
     );
     builder.create();
     builder.show();

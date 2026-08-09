@@ -1,4 +1,4 @@
-VERSION            = 1.08
+VERSION            = 1.10
 
 ANDROID_PATH       = /home/chupcko/Android
 PLATFORM           = android-36
